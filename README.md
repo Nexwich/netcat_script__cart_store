@@ -39,14 +39,21 @@ $nc_core->event->add_listener(nc_event::AFTER_MODULES_LOADED, function () {
 
 В системе имеется ошибка с событием на удаление товара из корзины и отстутствует событие на очистке корзины. Для решения проблемы о которой извесно в компании вам потребуется самостоятельно внести изменения в 2 файла.
 
-`netcat/modules/netshop/nc_netshop.class.php`  
+#### `netcat/modules/netshop/nc_netshop.class.php`
 Добавить константу событие об очищении корзины
-
 ```php
     const EVENT_CART_CLEAR = 'netshopCartClear';
 ```
 
-`netcat/modules/netshop/classes/cart.php`  
+Зарегистрируйте событие
+```php
+    static public function register_events() {
+        [...]
+        $nc_core->event->register_event(self::EVENT_CART_CLEAR, '', true);
+    }
+```
+
+#### `netcat/modules/netshop/classes/cart.php`
 Добавить  новый метод который будет сообщать об очищении корзины
 ```php
     protected function on_cart_clear() {
