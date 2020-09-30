@@ -2,11 +2,16 @@
 
 class OcCart extends nc_record {
 
-  public $catalog_id = 1; // id сайта
-  public $domain = ''; // домен для куки
-  public $time = 60 * 60 * 24 * 365; // 365 дней
-
   protected $table_name = 'Message388';
+
+  protected $catalog_id = 1; // id сайта
+  protected $domain = ''; // домен для куки
+  protected $Subdivision_ID = ''; // id раздела в котором распологается инфоблок компонента
+  protected $Sub_Class_ID = ''; // id инфоблока компонента
+  protected $User_ID = 0; // пользователь под которым будет добавлен объект
+  protected $time = 60 * 60 * 24 * 365; // 365 дней
+  protected $silt = 'Bnwec3'; // соль для хеша
+
 
   protected $users = array();
 
@@ -52,7 +57,7 @@ class OcCart extends nc_record {
 
 
     if (!$_COOKIE['cart_hash']) {
-      $this->hash = md5('Bnwec3' . $this->time);
+      $this->hash = md5($this->silt . $this->time);
       setcookie('cart_hash', $this->hash, $this->time, "/", $this->domain);
     }else $this->hash = $_COOKIE['cart_hash'];
 
@@ -83,9 +88,9 @@ class OcCart extends nc_record {
     if (!$this->get_id()) {
       $this->set_values([
         "Checked" => 1,
-        "Subdivision_ID" => 353,
-        "Sub_Class_ID" => 799,
-        "User_ID" => 81,
+        "Subdivision_ID" => $this->Subdivision_ID,
+        "Sub_Class_ID" => $this->Sub_Class_ID,
+        "User_ID" => $this->User_ID,
         "Created" => date('Y-m-d H:i:s'),
         "IP" => $_SERVER['REMOTE_ADDR'],
       ]);
@@ -122,7 +127,7 @@ class OcCart extends nc_record {
         if ($netshop->cart->get_items() != $this['Composition']) {
           $this->set_values([
             "LastUpdated" => date('Y-m-d H:i:s'),
-            "LastUser_ID" => 81,
+            "LastUser_ID" => $this->User_ID,
             "LastIP" => $_SERVER['REMOTE_ADDR'],
           ]);
           $this->set('Composition', $netshop->cart->get_items());

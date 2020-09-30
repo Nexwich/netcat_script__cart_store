@@ -1,19 +1,24 @@
 ## Старт
 
-Создайте новый компонент с полями  
+Создайте новый компонент с полями либо используйте компонент корзины добавив ему поля  
 `Hash` - строка (Хеш),  
 `Composition` - текстовое поле (Состав).
+Если созади новый компонент то добавьте его в дерево сайта
 
 Разместите скрипт в папке или скопируйте папку в корень.
 `netcat/modules/default/classes/oc_cart.php`
 
-В скрипте укажите id сайта, домен к которому будут присвоены куки и время их хранения. Так же укажите таблицу компонента который вы только что создали.
-```
-  public $catalog_id = 1;
-  public $domain = '';
-  public $time = 60 * 60 * 24 * 365; // 365 дней
-  
+В скрипте укажите id сайта, домен к которому будут присвоены куки и время их хранения. Так же укажите таблицу компонента который вы только что создали и данные к инфоблоку.
+```php
   protected $table_name = 'Message388';
+
+  protected $catalog_id = 1; // id сайта
+  protected $domain = ''; // домен для куки
+  protected $Subdivision_ID = ''; // id раздела в котором распологается инфоблок компонента
+  protected $Sub_Class_ID = ''; // id инфоблока компонента
+  protected $User_ID = 0; // пользователь под которым будет добавлен объект
+  protected $time = 60 * 60 * 24 * 365; // 365 дней
+  protected $silt = 'Bnwec3'; // соль для хеша
 ```
 
 В файле `function.inc.php` подключите скрипт например
@@ -38,18 +43,18 @@ $nc_core->event->add_listener(nc_event::AFTER_MODULES_LOADED, function () {
 Добавить константу событие об очищении корзины
 
 ```php
-const EVENT_CART_CLEAR = 'netshopCartClear';
+    const EVENT_CART_CLEAR = 'netshopCartClear';
 ```
 
 `netcat/modules/netshop/classes/cart.php`  
 Добавить  новый метод который будет сообщать об очищении корзины
-```
-protected function on_cart_clear() {
-  nc_core::get_object()->event->execute(nc_netshop::EVENT_CART_CLEAR);
-}
+```php
+    protected function on_cart_clear() {
+        nc_core::get_object()->event->execute(nc_netshop::EVENT_CART_CLEAR);
+    }
 ```
 Изменить метод очистки корзины добавив в конец `$this->on_cart_clear();`
-```
+```php
     public function clear() {
         [...]
         $this->on_cart_clear();
